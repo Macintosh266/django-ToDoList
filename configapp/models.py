@@ -1,7 +1,8 @@
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.contrib.auth.models import PermissionsMixin
 from django.db import models
-
+import re
+from django.core.exceptions import ValidationError
 
 class CustomUserManager(BaseUserManager):
     def create_user(self,username,password=None,**extra_fields):
@@ -24,7 +25,7 @@ class CustomUserManager(BaseUserManager):
         return  self.create_user(username,password,**extra_fields)
 
 class User(AbstractBaseUser,PermissionsMixin):
-    username=models.CharField(max_length=50,unique=True)
+    username=models.CharField(max_length=15,unique=True)
     email = models.CharField(max_length=50, null=True)
     is_admin = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
@@ -35,6 +36,9 @@ class User(AbstractBaseUser,PermissionsMixin):
 
     USERNAME_FIELD='username'
     REQUIRED_FIELDS = []
+
+
+
 
     def __str__(self):
         return self.username
@@ -57,3 +61,24 @@ class ToDoList(models.Model):
     def __str__(self):
         return self.title
 
+
+import random
+
+class PhoneMassage(models.Model):
+    phone=models.CharField(max_length=15,unique=True)
+    time_password = models.CharField(max_length=5)
+    is_bool = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"{self.phone} - {self.is_bool}"
+    
+    def clean(self):
+        super().clean()
+        if self.phone and not re.match(r'^\+?\d{9,15}$', self.phone):
+            raise ValidationError({'phone': 'Telefon raqami noto‘g‘ri formatda. Masalan: +998901234567'})
+
+    def set_reset_code(self):
+        code = str(random.randint(10000, 99999))
+        self.time_password = code
+        self.save()
+        return code

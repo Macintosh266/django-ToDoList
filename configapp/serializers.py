@@ -4,13 +4,13 @@ from .models import *
 
 class ToDoListSerializer(serializers.ModelSerializer):
     class Meta:
-        model=ToDoList()
+        model=ToDoList
         fields=['user','title','description','is_completed']
         read_only_fields = ['user']
 
 
 class LoginSerializer(serializers.Serializer):
-    username = serializers.CharField()
+    username = serializers.CharField(max_length=15)
     password = serializers.CharField(write_only=True)
 
     def validate(self,attrs):
@@ -26,9 +26,9 @@ class LoginSerializer(serializers.Serializer):
                 "detail":"User does not exist!"
 
             })
-        auth_user=authenticate(username=user.username,password=password)
+        auth_phone=authenticate(username=user.username,password=password)
 
-        if auth_user is None:
+        if auth_phone is None:
             raise serializers.ValidationError(
                 {
                     "succes":False,
@@ -36,7 +36,23 @@ class LoginSerializer(serializers.Serializer):
                 }
             )
 
-        attrs['user']=auth_user
+        attrs['user']=auth_phone
         return attrs
 
 
+
+class PhoneMassageSerializer(serializers.Serializer):
+    phone = serializers.CharField(max_length=15)
+
+
+
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = [ "username", "email", "password"]
+        read_only_fields = ["is_admin", "is_staff","is_user", "is_active"]
+
+class VerifyCodeSerializer(serializers.Serializer):
+    phone = serializers.CharField(max_length=15)
+    code = serializers.CharField(max_length=5)

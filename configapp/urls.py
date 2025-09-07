@@ -11,4 +11,8 @@ urlpatterns=[
     path('api/token/', LoginUser.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('todaolist/',Todolist.as_view(),name='todolist'),
+    path('staffregist/',StaffRegister.as_view(),name='staffregist'),
+    path('send-code/', PhoneSendMassage.as_view()),
+    path('verify-code/', VerifyPhoneCode.as_view()),
+
 ]

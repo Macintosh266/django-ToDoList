@@ -38,10 +38,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'configapp',
-    'rest_framework_simplejwt',
     'rest_framework',
     'rest_framework.authtoken',
     'drf_yasg',
+    'rest_framework_simplejwt',
 ]
 
 SWAGGER_SETTINGS = {
