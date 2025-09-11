@@ -10,15 +10,15 @@ class ToDoListSerializer(serializers.ModelSerializer):
 
 
 class LoginSerializer(serializers.Serializer):
-    username = serializers.CharField(max_length=15)
+    phone = serializers.CharField(max_length=15)
     password = serializers.CharField(write_only=True)
 
     def validate(self,attrs):
-        username = attrs.get('username')
+        phone = attrs.get('phone')
         password = attrs.get('password')
 
         try:
-            user=User.objects.get(username=username)
+            user=User.objects.get(phone=phone)
         except User.DoesNotExist:
             raise serializers.ValidationError(
                 {
@@ -26,7 +26,7 @@ class LoginSerializer(serializers.Serializer):
                 "detail":"User does not exist!"
 
             })
-        auth_phone=authenticate(username=user.username,password=password)
+        auth_phone=authenticate(phone=user.phone,password=password)
 
         if auth_phone is None:
             raise serializers.ValidationError(
@@ -50,8 +50,8 @@ class PhoneMassageSerializer(serializers.Serializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = [ "username", "email", "password"]
-        read_only_fields = ["is_admin", "is_staff","is_user", "is_active"]
+        fields = [ "phone", "email", "password","is_admin", "is_staff","is_user"]
+        read_only_fields = ["is_active"]
 
 class VerifyCodeSerializer(serializers.Serializer):
     phone = serializers.CharField(max_length=15)
